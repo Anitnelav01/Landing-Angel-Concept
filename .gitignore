@@ -1,0 +1,19 @@
+cat > .gitignore << EOF
+
+node_modules/
+package-lock.json
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+*.sublime-*
+
+*.log
+*.tmp
+*.cache
+
+dist/
+build/
+EOF
