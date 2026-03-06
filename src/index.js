@@ -13,6 +13,27 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentIndex = 0;
   let timerInterval;
   let isTransitioning = false;
+  let isPaused = false;
+  let currentWidth = 0;
+  let progressInterval = 40;
+  let progressStep = 0.5;
+
+  const mobileTitles = [
+    "Ангел Concept — центр премиум-косметологии в Ставрополе",
+    "Косметология: уходы, инъекции, лифтинг",
+    "Коррекция фигуры и силуэта",
+    "SPA и европейские массажи",
+    "Велнес-программы и флотация",
+    "Beauty услуги: волосы, ногти, макияж",
+    "Тайские и балийские массажи",
+  ];
+
+  function updateMobileTitles(index) {
+    const mobileHeroTitle = document.getElementById("mobile-hero-title");
+    if (mobileHeroTitle && mobileTitles[index]) {
+      mobileHeroTitle.innerHTML = mobileTitles[index];
+    }
+  }
 
   function switchToSlide(index) {
     if (isTransitioning) return;
@@ -45,13 +66,28 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
-      progressFills.forEach((bar) => {
-        bar.style.width = "0%";
+      progressFills.forEach((bar, i) => {
+        if (i !== index) {
+          bar.classList.add("progress-bar__fill--inactive");
+          bar.style.width = "100%";
+        } else {
+          bar.classList.remove("progress-bar__fill--inactive");
+
+          bar.style.transition = "none";
+          bar.style.width = "0%";
+
+          setTimeout(() => {
+            bar.style.transition = "width 0.1s linear";
+          }, 10);
+        }
       });
+      currentWidth = 0;
+
+      updateMobileTitles(index);
 
       setTimeout(() => {
         isTransitioning = false;
-      }, 500);
+      }, 1200);
     }, 100);
   }
 
@@ -65,16 +101,18 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    let width = 0;
-    const step = 0.5;
-    const interval = 50;
+    if (!isPaused) {
+      currentWidth = 0;
+    }
 
     timerInterval = setInterval(() => {
-      width += step;
+      if (isPaused) return;
 
-      if (width >= 100) {
-        width = 100;
-        currentProgressFill.style.width = width + "%";
+      currentWidth += progressStep;
+
+      if (currentWidth >= 100) {
+        currentWidth = 100;
+        currentProgressFill.style.width = currentWidth + "%";
 
         clearInterval(timerInterval);
 
@@ -82,9 +120,31 @@ document.addEventListener("DOMContentLoaded", function () {
         switchToSlide(currentIndex);
         startProgress();
       } else {
-        currentProgressFill.style.width = width + "%";
+        currentProgressFill.style.width = currentWidth + "%";
       }
-    }, interval);
+    }, progressInterval);
+  }
+
+  function pauseProgress() {
+    if (!isPaused && timerInterval) {
+      isPaused = true;
+
+      const currentProgressFill = progressFills[currentIndex];
+      if (currentProgressFill) {
+        currentWidth = parseFloat(currentProgressFill.style.width) || 0;
+      }
+    }
+  }
+
+  function resumeProgress() {
+    if (isPaused) {
+      isPaused = false;
+
+      const currentProgressFill = progressFills[currentIndex];
+      if (currentProgressFill) {
+        currentProgressFill.style.width = currentWidth + "%";
+      }
+    }
   }
 
   serviceCards.forEach((card, index) => {
@@ -99,26 +159,20 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 500);
       }
     });
-
-    card.addEventListener("mouseleave", function () {
-      card.style.transform = "scale(1)";
-    });
   });
 
   const carousel = document.querySelector(".services-carousel");
   if (carousel) {
     carousel.addEventListener("mouseenter", () => {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
+      pauseProgress();
     });
 
     carousel.addEventListener("mouseleave", () => {
-      startProgress();
+      resumeProgress();
     });
   }
 
   switchToSlide(0);
   startProgress();
+  updateMobileTitles(0);
 });

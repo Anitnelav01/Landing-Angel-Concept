@@ -5,32 +5,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="#" type="image/x-icon" />
   <meta name="description"
     content="Салон красоты премиального уровня в Ставрополе. Косметология, SPA, массажи, коррекция фигуры." />
   <title>Angel Concept — премиальный салон красоты в Ставрополе</title>
 
-  <!-- Предзагрузка критических ресурсов -->
   <link rel="preload" href="assets/images/Center.png" as="image">
   <link rel="preload" href="assets/images/image%2018.png" as="image">
 
-  <!-- Preconnect для внешних ресурсов -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
-  <!-- Стили (критические загружаем сразу, остальные через Webpack) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" media="print"
     onload="this.media='all'">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" media="print"
     onload="this.media='all'">
 
-  <!-- Шрифты с оптимизацией -->
   <link
     href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Golos+Text:wght@400..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
     rel="stylesheet" media="print" onload="this.media='all'" />
 
-  <!-- Fallback для браузеров без JS -->
   <noscript>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
@@ -69,7 +64,9 @@
         </div>
         <span class="rating__text">Салон красоты премиального уровня в Ставрополе</span>
       </div>
-
+      <button class="burger" aria-label="Меню">
+        <span class="burger__line"></span><span class="burger__line"></span>
+      </button>
       <a href="/" class="logo" aria-label="На главную">
         <img src="assets/images/Center.png" alt="Angel Concept" class="logo__img" width="90" height="69"
           fetchpriority="high">
@@ -112,9 +109,7 @@
           </span>
         </a>
       </div>
-      <button class="burger" aria-label="Меню">
-        <span class="burger__line"></span><span class="burger__line"></span><span class="burger__line"></span>
-      </button>
+
     </div>
 
     <nav class="container hero__nav">
@@ -136,17 +131,9 @@
   <section class="hero">
     <div class="hero__slider">
       <div class="hero__slide active">
-       <video 
-  class="hero__video" 
-  autoplay 
-  muted 
-  loop 
-  playsinline 
-  loading="lazy"
-  fetchpriority="low"
->
-  <source src="assets/images/Angel_bg2.mp4" type="video/mp4" />
-</video>
+        <video class="hero__video" autoplay muted loop playsinline loading="lazy" fetchpriority="low">
+          <source src="assets/images/Angel_bg2.mp4" type="video/mp4" />
+        </video>
       </div>
       <div class="hero__slide">
         <img loading="lazy" src="assets/images/slide2.png" alt="Фон 2" class="hero__bg" width="1920" height="1080">
@@ -177,6 +164,48 @@
         <div class="hero__actions">
           <a href="#services" class="btn btn--primary btn--primary-white">
             Подробнее об услугах
+            <span class="btn__circle-white">
+              <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true">
+                <path
+                  d="M8.65332 8.4543C8.65332 8.56475 8.56378 8.6543 8.45332 8.6543H7.45391C7.34345 8.6543 7.25391 8.56475 7.25391 8.4543V2.87347C7.25391 2.69529 7.03848 2.60605 6.91249 2.73205L1.2049 8.43963C1.12679 8.51774 1.00016 8.51774 0.922055 8.43963L0.214664 7.73224C0.136559 7.65414 0.136559 7.5275 0.214664 7.4494L5.92225 1.74181C6.04824 1.61582 5.95901 1.40039 5.78083 1.40039H0.2C0.089543 1.40039 0 1.31085 0 1.20039V0.2C0 0.0895431 0.089543 0 0.2 0H8.45332C8.56378 0 8.65332 0.0895431 8.65332 0.2V8.4543Z"
+                  fill="#AA7D26" />
+              </svg>
+            </span>
+          </a>
+        </div>
+      </div>
+      <div class="hero__content-mobile">
+        <div class="rating__block">
+          <a href="#">
+            <div class="rating__yandex">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                aria-label="Яндекс">
+                <g clip-path="url(#a)">
+                  <path fill="#f8604a" d="M24 12c0-6.628-5.372-12-12-12S0 5.372 0 12s5.372 12 12 12 12-5.372 12-12" />
+                  <path fill="#fff"
+                    d="M16.2 19.22h-2.42V6.72h-1.22c-2.08 0-3.12 1.04-3.12 2.6 0 1.74.7 2.6 2.26 3.64l1.22.86-3.46 5.38H6.68l3.3-4.86c-1.9-1.38-2.94-2.6-2.94-4.86 0-2.78 1.9-4.68 5.56-4.68h3.6z" />
+                </g>
+                <defs>
+                  <clipPath id="a">
+                    <path fill="#fff" d="M0 0h24v24H0z" />
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
+            <div class="rating__stars">
+              <span class="rating__star">Рейтинг · 4.9</span>
+              <span class="rating__star">135 отзывов</span>
+            </div>
+          </a>
+        </div>
+        <h1 id="mobile-hero-title" class="hero__title">Ангел Concept — <br />центр премиального ухода <br />и
+          косметологии в Ставрополе</h1>
+        <p class="hero__description">Место, где вы выбираете заботу о себе как стиль жизни. Эстетично, профессионально и
+          легко</p>
+        <div class="hero__actions">
+          <a href="#services" class="btn btn--primary btn--primary-white">
+            Выбрать процедуру
             <span class="btn__circle-white">
               <svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true">
