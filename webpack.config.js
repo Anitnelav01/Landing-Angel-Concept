@@ -11,9 +11,7 @@ const isProduction = process.env.NODE_ENV === "production";
 module.exports = {
   entry: "./src/index.js",
   output: {
-    filename: isProduction
-      ? "js/[name].[contenthash].js"
-      : "bundle.[contenthash].js",
+    filename: "bundle.[contenthash].js",
     path: path.resolve(__dirname, "dist"),
     clean: true,
     publicPath: "/",
@@ -39,7 +37,7 @@ module.exports = {
                 },
               ],
             ],
-            cacheDirectory: true, // Кэширование для ускорения сборки
+            cacheDirectory: true,
           },
         },
       },
@@ -59,7 +57,7 @@ module.exports = {
               postcssOptions: {
                 plugins: [
                   ["autoprefixer"],
-                  ...(isProduction ? ["cssnano"] : []), // Минификация CSS только в production
+                  ...(isProduction ? ["cssnano"] : []),
                 ],
               },
             },
@@ -71,7 +69,7 @@ module.exports = {
         type: "asset",
         parser: {
           dataUrlCondition: {
-            maxSize: 8 * 1024, // 8kb - маленькие изображения вставляются как base64
+            maxSize: 8 * 1024,
           },
         },
         generator: {
@@ -98,20 +96,11 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./src/index.html",
-      minify: isProduction
-        ? {
-            removeComments: true,
-            collapseWhitespace: true,
-            removeRedundantAttributes: true,
-            useShortDoctype: true,
-            removeEmptyAttributes: true,
-            removeStyleLinkTypeAttributes: true,
-            keepClosingSlash: true,
-            minifyJS: true,
-            minifyCSS: true,
-            minifyURLs: true,
-          }
-        : false,
+      filename: "index.html",
+      inject: "body",
+      scriptLoading: "defer",
+      minify: false,
+      chunks: ["main"],
     }),
 
     new CopyPlugin({
@@ -120,23 +109,25 @@ module.exports = {
           from: "src/assets/images",
           to: "assets/images",
           globOptions: {
-            ignore: ["**/*.js", "**/*.css", "**/*.svg"], // Игнорируем SVG (они уже обработаны)
+            ignore: ["**/*.js", "**/*.css"],
           },
+        },
+        {
+          from: "src/assets/videos",
+          to: "assets/videos",
+          noErrorOnMissing: true,
         },
       ],
     }),
 
-    // Выделяем CSS в отдельный файл только в production
     ...(isProduction
       ? [
           new MiniCssExtractPlugin({
             filename: "css/[name].[contenthash].css",
-            chunkFilename: "css/[id].[contenthash].css",
           }),
         ]
       : []),
 
-    // Анализ размера бандла (опционально, для отладки)
     ...(process.env.ANALYZE ? [new BundleAnalyzerPlugin()] : []),
   ],
 
@@ -146,7 +137,7 @@ module.exports = {
       new TerserPlugin({
         terserOptions: {
           compress: {
-            drop_console: isProduction, // Убираем console.log в production
+            drop_console: isProduction,
           },
           format: {
             comments: false,
@@ -154,31 +145,17 @@ module.exports = {
         },
         extractComments: false,
       }),
-      new CssMinimizerPlugin(), // Минифицируем CSS
+      new CssMinimizerPlugin(),
     ],
-    splitChunks: {
-      chunks: "all",
-      cacheGroups: {
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          name: "vendors",
-          chunks: "all",
-        },
-        // Отделяем основные библиотеки
-        commons: {
-          name: "commons",
-          minChunks: 2,
-          chunks: "all",
-        },
-      },
-    },
-    runtimeChunk: "single", // Отделяем runtime код
+
+    splitChunks: false,
+    runtimeChunk: false,
   },
 
   performance: {
     hints: isProduction ? "warning" : false,
-    maxEntrypointSize: 512000, // 500kb
-    maxAssetSize: 512000, // 500kb
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
   },
 
   devServer: {
@@ -188,17 +165,17 @@ module.exports = {
     hot: true,
     liveReload: true,
     historyApiFallback: true,
-    compress: true, // Сжатие для dev server
+    compress: true,
   },
 
   resolve: {
     extensions: [".js", ".json"],
     alias: {
-      "@": path.resolve(__dirname, "src"), // Удобные алиасы
+      "@": path.resolve(__dirname, "src"),
     },
   },
 
   cache: {
-    type: "filesystem", // Кэширование для ускорения повторных сборок
+    type: "filesystem",
   },
 };
