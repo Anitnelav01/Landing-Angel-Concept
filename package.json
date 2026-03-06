@@ -5,10 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode production",
-    "dev": "webpack --mode development --watch",
-    "start": "webpack serve --mode development --open",
-    "build:prod": "webpack --mode production --stats verbose",
-    "analyze": "webpack --mode production --analyze"
+    "start": "webpack serve --mode development"
   },
   "keywords": [],
   "author": "",
