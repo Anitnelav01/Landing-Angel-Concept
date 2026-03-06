@@ -136,9 +136,18 @@
   <section class="hero">
     <div class="hero__slider">
       <div class="hero__slide active">
-        <video class="hero__video" autoplay muted loop playsinline loading="lazy" poster="assets/images/slide1-1.png">
-          <source src="assets/images/Angel_bg2.mp4" type="video/mp4" />
-        </video>
+       <video 
+  class="hero__video" 
+  autoplay 
+  muted 
+  loop 
+  playsinline 
+  loading="lazy"
+  fetchpriority="low"
+  poster="assets/images/slide1-1.png"
+>
+  <source src="assets/images/Angel_bg2.mp4" type="video/mp4" />
+</video>
       </div>
       <div class="hero__slide">
         <img loading="lazy" src="assets/images/slide2.png" alt="Фон 2" class="hero__bg" width="1920" height="1080">
