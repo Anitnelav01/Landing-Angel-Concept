@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -66,15 +67,54 @@ module.exports = {
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif|ico)$/i,
-        type: "asset",
-        parser: {
-          dataUrlCondition: {
-            maxSize: 8 * 1024,
+        oneOf: [
+          {
+            resourceQuery: /inline/,
+            type: "asset/inline",
+            parser: {
+              dataUrlCondition: {
+                maxSize: 8 * 1024, // 8kb
+              },
+            },
           },
-        },
-        generator: {
-          filename: "assets/images/[name].[hash:8][ext]",
-        },
+          {
+            type: "asset",
+            parser: {
+              dataUrlCondition: {
+                maxSize: 4 * 1024, // 4kb
+              },
+            },
+            generator: {
+              filename: "assets/images/[name].[hash:8][ext]",
+            },
+            use: [
+              {
+                loader: "image-webpack-loader",
+                options: {
+                  disable: !isProduction,
+                  mozjpeg: {
+                    progressive: true,
+                    quality: 65,
+                  },
+                  optipng: {
+                    enabled: true,
+                    optimizationLevel: 5,
+                  },
+                  pngquant: {
+                    quality: [0.65, 0.9],
+                    speed: 4,
+                  },
+                  gifsicle: {
+                    interlaced: false,
+                  },
+                  webp: {
+                    quality: 60,
+                  },
+                },
+              },
+            ],
+          },
+        ],
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
@@ -99,7 +139,20 @@ module.exports = {
       filename: "index.html",
       inject: "body",
       scriptLoading: "defer",
-      minify: false,
+      minify: isProduction
+        ? {
+            removeComments: true,
+            collapseWhitespace: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true,
+          }
+        : false,
       chunks: ["main"],
     }),
 
@@ -109,12 +162,17 @@ module.exports = {
           from: "src/assets/images",
           to: "assets/images",
           globOptions: {
-            ignore: ["**/*.js", "**/*.css"],
+            ignore: ["**/*.js", "**/*.css", "**/*.svg"],
           },
         },
         {
           from: "src/assets/videos",
           to: "assets/videos",
+          noErrorOnMissing: true,
+        },
+        {
+          from: "src/assets/fonts",
+          to: "assets/fonts",
           noErrorOnMissing: true,
         },
       ],
@@ -138,6 +196,8 @@ module.exports = {
         terserOptions: {
           compress: {
             drop_console: isProduction,
+            drop_debugger: true,
+            pure_funcs: ["console.log", "console.info", "console.debug"],
           },
           format: {
             comments: false,
@@ -146,8 +206,43 @@ module.exports = {
         extractComments: false,
       }),
       new CssMinimizerPlugin(),
+      new ImageMinimizerPlugin({
+        minimizer: {
+          implementation: ImageMinimizerPlugin.imageminMinify,
+          options: {
+            plugins: [
+              ["gifsicle", { interlaced: true }],
+              ["jpegtran", { progressive: true }],
+              ["optipng", { optimizationLevel: 5 }],
+              ["pngquant", { quality: [0.65, 0.9], speed: 4 }],
+              [
+                "svgo",
+                {
+                  plugins: [
+                    {
+                      name: "preset-default",
+                      params: { overrides: { removeViewBox: false } },
+                    },
+                    { name: "removeComments", active: true },
+                    { name: "removeTitle", active: true },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        generator: [
+          {
+            type: "asset",
+            implementation: ImageMinimizerPlugin.imageminGenerate,
+            options: {
+              plugins: ["imagemin-webp"],
+            },
+            filename: "assets/images/[name].[hash:8].webp",
+          },
+        ],
+      }),
     ],
-
     splitChunks: false,
     runtimeChunk: false,
   },
@@ -166,6 +261,12 @@ module.exports = {
     liveReload: true,
     historyApiFallback: true,
     compress: true,
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false,
+      },
+    },
   },
 
   resolve: {
@@ -177,5 +278,15 @@ module.exports = {
 
   cache: {
     type: "filesystem",
+    buildDependencies: {
+      config: [__filename],
+    },
+  },
+
+  stats: {
+    modules: false,
+    children: false,
+    chunks: false,
+    chunkModules: false,
   },
 };
