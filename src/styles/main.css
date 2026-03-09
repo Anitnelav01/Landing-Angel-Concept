@@ -756,7 +756,7 @@ button::-moz-focus-inner,
   flex-direction: row;
   align-items: flex-start;
   height: 100%;
-  padding: 3px 3px 2px 0;
+  padding: 0 5px;
   font-family: 'KyivType Sans', sans-serif;
   font-size: 12px;
   color: var(--color-white);
@@ -821,6 +821,7 @@ button::-moz-focus-inner,
   overflow: hidden;
   flex-shrink: 0;
   border-radius: 15px;
+  margin: auto;
 }
 
 .service-card--active .service-card__image {
