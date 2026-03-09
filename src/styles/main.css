@@ -648,7 +648,7 @@ button::-moz-focus-inner,
   flex: 1;
   flex-direction: column;
   justify-content: flex-start;
-  max-width: 80%;
+  max-width: 88%;
   text-align: left;
   animation: fadeInUp 1s ease;
 }
