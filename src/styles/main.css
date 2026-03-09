@@ -731,7 +731,7 @@ button::-moz-focus-inner,
 .services-carousel {
   position: relative;
   width: 75%;
-  margin-top: 64px;
+  padding-bottom: 30px;
 }
 
 .swiper-wrapper {
@@ -1131,7 +1131,6 @@ button::-moz-focus-inner,
   .services-carousel {
     position: relative;
     width: 100%;
-    margin-top: 64px;
   }
 }
 
@@ -1410,7 +1409,7 @@ button::-moz-focus-inner,
 
   .hero__content-mobile {
     display: flex;
-    margin-top: 10%;
+    margin-top: 12%;
   }
 
   .hero__content-mobile .hero__title {
@@ -1458,16 +1457,15 @@ button::-moz-focus-inner,
 
   .services-carousel {
     width: 100%;
-    margin-bottom: 32px;
   }
 
   .hero__container {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 600px;
+    min-height: 666px;
     height: auto;
-    padding-top: 100px;
+    padding-top: 85px;
   }
 
   .btn.btn--primary.btn--primary-white {
